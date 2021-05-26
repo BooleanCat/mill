@@ -3,9 +3,14 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 use termcolor::WriteColor;
 
+mod config;
+
 #[derive(Debug, StructOpt)]
 #[structopt(about = "An OCI-compliant container runtime")]
 struct Opt {
+    #[structopt(short, long, parse(from_os_str))]
+    config: Option<PathBuf>,
+
     #[structopt(subcommand)]
     command: Subcommand,
 }
@@ -51,7 +56,16 @@ enum Subcommand {
 }
 
 fn main() {
-    let _ = Opt::from_args();
+    let opt = Opt::from_args();
+
+    let _ = match opt.config {
+        None => config::Config::load(),
+        Some(path) => config::Config::from_file(path),
+    }
+    .unwrap_or_else(|error| {
+        write_error(&format!("failed to load mill config: {:?}", error));
+        std::process::exit(1);
+    });
 
     write_error("not implemented");
     std::process::exit(1);

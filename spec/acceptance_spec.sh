@@ -13,6 +13,14 @@ Describe 'acceptance'
     End
   End
 
+  Describe 'global args'
+    It 'accepts --config'
+      When run target/release/mill --config foo --help
+      The status should be success
+      The output should include 'USAGE'
+    End
+  End
+
   Describe 'state'
     It 'is not implemented'
       When run target/release/mill state foo
