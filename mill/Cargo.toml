@@ -9,3 +9,5 @@ description = "An OCI-compliant container runtime."
 [dependencies]
 
 mill_core = { path = "../mill_core", version = "0.1.0" }
+structopt = "0.3"
+termcolor = "1.1"
