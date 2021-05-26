@@ -1,0 +1,9 @@
+[package]
+name = "mill_core"
+version = "0.1.0"
+authors = ["Tom Godkin <tomgodkin@pm.me>"]
+edition = "2018"
+license = "Unlicense OR MIT"
+description = "Core library for mill, an OCI-compliant container runtime."
+
+[dependencies]

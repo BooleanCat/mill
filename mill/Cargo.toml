@@ -1,0 +1,11 @@
+[package]
+name = "mill"
+version = "0.1.0"
+authors = ["Tom Godkin <tomgodkin@pm.me>"]
+edition = "2018"
+license = "Unlicense OR MIT"
+description = "An OCI-compliant container runtime."
+
+[dependencies]
+
+mill_core = { path = "../mill_core", version = "0.1.0" }

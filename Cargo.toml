@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "mill",
+    "mill_core",
+]
