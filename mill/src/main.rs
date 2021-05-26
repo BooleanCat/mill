@@ -4,6 +4,7 @@ use structopt::StructOpt;
 use termcolor::WriteColor;
 
 #[derive(Debug, StructOpt)]
+#[structopt(about = "An OCI-compliant container runtime")]
 struct Opt {
     #[structopt(subcommand)]
     command: Subcommand,
@@ -12,11 +13,13 @@ struct Opt {
 #[derive(Debug, StructOpt)]
 #[structopt(no_version)]
 enum Subcommand {
+    #[structopt(about = "Query container state")]
     State {
         #[structopt(name = "container-id")]
         id: String,
     },
 
+    #[structopt(about = "Create container from bundle")]
     Create {
         #[structopt(name = "container-id")]
         id: String,
@@ -25,11 +28,13 @@ enum Subcommand {
         bundle_path: PathBuf,
     },
 
+    #[structopt(about = "Start created container")]
     Start {
         #[structopt(name = "container-id")]
         id: String,
     },
 
+    #[structopt(about = "Kill container with signal")]
     Kill {
         #[structopt(name = "container-id")]
         id: String,
@@ -38,6 +43,7 @@ enum Subcommand {
         signal: String,
     },
 
+    #[structopt(about = "Delete container")]
     Delete {
         #[structopt(name = "container-id")]
         id: String,
