@@ -1,0 +1,23 @@
+---
+on:
+  push: {branches: [main]}
+  pull_request: {branches: [main]}
+name: Test
+jobs:
+  test:
+    name: Test and build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: 1.53.0
+        override: true
+        components: "rustfmt,clippy"
+    - name: Check
+      run: make check
+    - name: Unit Test
+      run: make test-unit
+    - name: Build
+      run: make build
