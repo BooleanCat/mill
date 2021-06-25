@@ -1,10 +1,12 @@
 mod mount;
 mod root;
+pub mod vm;
 
 pub use mount::Mount;
 pub use root::Root;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+pub use vm::Vm;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -25,7 +27,8 @@ pub struct Config {
     // pub linux: Option<Linux>,
     // pub windows: Option<Windows>,
     // pub solaris: Option<Solaris>,
-    // pub vm: Option<Vm>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vm: Option<Vm>,
 }
 
 impl Config {
@@ -36,13 +39,14 @@ impl Config {
             mounts: None,
             hostname: None,
             annotations: None,
+            vm: None,
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{Config, Mount, Root};
+    use super::{vm, Config, Mount, Root, Vm};
     use serde_json;
 
     #[test]
@@ -71,6 +75,11 @@ mod tests {
             "hostname": "baz",
             "annotations": {
                 "com.example.gpu-cores": "2"
+            },
+            "vm": {
+                "kernel": {
+                    "path": "/bar/foo"
+                }
             }
         });
 
@@ -84,6 +93,7 @@ mod tests {
                     .cloned()
                     .collect(),
             ),
+            vm: Some(Vm::new(vm::Kernel::new("/bar/foo"))),
             ..Config::new("0.1.0")
         })
         .unwrap();
