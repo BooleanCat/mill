@@ -1,3 +1,6 @@
+mod root;
+
+pub use root::Root;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -5,7 +8,9 @@ use std::collections::HashMap;
 #[serde(rename_all = "camelCase")]
 pub struct Config {
     pub oci_version: String,
-    // pub root: Option<Root>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub root: Option<Root>,
     // pub mounts: Option<Vec<Mount>>,
     // pub process: Option<Process>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,6 +28,7 @@ impl Config {
     pub fn new(oci_version: &str) -> Self {
         Self {
             oci_version: String::from(oci_version),
+            root: None,
             hostname: None,
             annotations: None,
         }
@@ -31,7 +37,7 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use super::Config;
+    use super::{Config, Root};
     use serde_json;
 
     #[test]
@@ -49,6 +55,9 @@ mod tests {
     fn serialize_optional_fields() {
         let want = serde_json::json!({
             "ociVersion": "0.1.0",
+            "root": {
+                "path": "/foo/bar"
+            },
             "hostname": "baz",
             "annotations": {
                 "com.example.gpu-cores": "2"
@@ -57,6 +66,7 @@ mod tests {
 
         let got = serde_json::to_value(Config {
             hostname: Some(String::from("baz")),
+            root: Some(Root::new("/foo/bar")),
             annotations: Some(
                 [(String::from("com.example.gpu-cores"), String::from("2"))]
                     .iter()
