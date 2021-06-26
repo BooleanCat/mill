@@ -1,8 +1,10 @@
 mod mount;
+pub mod process;
 mod root;
 pub mod vm;
 
 pub use mount::Mount;
+pub use process::Process;
 pub use root::Root;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -18,7 +20,10 @@ pub struct Config {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<Mount>>,
-    // pub process: Option<Process>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub process: Option<Process>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     // pub hooks: Option<Hook>,
@@ -37,6 +42,7 @@ impl Config {
             oci_version: String::from(oci_version),
             root: None,
             mounts: None,
+            process: None,
             hostname: None,
             annotations: None,
             vm: None,
@@ -46,7 +52,7 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use super::{vm, Config, Mount, Root, Vm};
+    use super::{vm, Config, Mount, Process, Root, Vm};
     use serde_json;
 
     #[test]
@@ -72,6 +78,9 @@ mod tests {
                     "destination": "/foo/bar"
                 }
             ],
+            "process": {
+                "cwd": "/foo/bar"
+            },
             "hostname": "baz",
             "annotations": {
                 "com.example.gpu-cores": "2"
@@ -84,9 +93,10 @@ mod tests {
         });
 
         let got = serde_json::to_value(Config {
-            hostname: Some(String::from("baz")),
             root: Some(Root::new("/foo/bar")),
             mounts: Some(vec![Mount::new("/foo/bar")]),
+            process: Some(Process::new("/foo/bar")),
+            hostname: Some(String::from("baz")),
             annotations: Some(
                 [(String::from("com.example.gpu-cores"), String::from("2"))]
                     .iter()
