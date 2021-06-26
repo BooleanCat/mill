@@ -62,59 +62,45 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "ociVersion": "0.1.0"
-        });
-
-        let got = serde_json::to_value(Config::new("0.1.0")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({"ociVersion": "0.1.0"}),
+            serde_json::to_value(Config::new("0.1.0")).unwrap()
+        );
     }
 
     #[test]
     fn serialize_optional_fields() {
-        let want = serde_json::json!({
-            "ociVersion": "0.1.0",
-            "root": {
-                "path": "/foo/bar"
-            },
-            "mounts": [
-                {
-                    "destination": "/foo/bar"
-                }
-            ],
-            "process": {
-                "cwd": "/foo/bar"
-            },
-            "hostname": "baz",
-            "annotations": {
-                "com.example.gpu-cores": "2"
-            },
-            "vm": {
-                "kernel": {
-                    "path": "/bar/foo"
-                }
-            },
-            "solaris": {}
-        });
-
-        let got = serde_json::to_value(Config {
-            root: Some(Root::new("/foo/bar")),
-            mounts: Some(vec![Mount::new("/foo/bar")]),
-            process: Some(Process::new("/foo/bar")),
-            hostname: Some(String::from("baz")),
-            annotations: Some(
-                [(String::from("com.example.gpu-cores"), String::from("2"))]
-                    .iter()
-                    .cloned()
-                    .collect(),
-            ),
-            vm: Some(Vm::new(vm::Kernel::new("/bar/foo"))),
-            solaris: Some(Solaris::new()),
-            ..Config::new("0.1.0")
-        })
-        .unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "ociVersion": "0.1.0",
+                "root": {"path": "/foo/bar"},
+                "mounts": [
+                    {"destination": "/foo/bar"}
+                ],
+                "process": {"cwd": "/foo/bar"},
+                "hostname": "baz",
+                "annotations": {"com.example.gpu-cores": "2"},
+                "vm": {
+                    "kernel": {"path": "/bar/foo"}
+                },
+                "solaris": {}
+            }),
+            serde_json::to_value(Config {
+                root: Some(Root::new("/foo/bar")),
+                mounts: Some(vec![Mount::new("/foo/bar")]),
+                process: Some(Process::new("/foo/bar")),
+                hostname: Some(String::from("baz")),
+                annotations: Some(
+                    [(String::from("com.example.gpu-cores"), String::from("2"))]
+                        .iter()
+                        .cloned()
+                        .collect(),
+                ),
+                vm: Some(Vm::new(vm::Kernel::new("/bar/foo"))),
+                solaris: Some(Solaris::new()),
+                ..Config::new("0.1.0")
+            })
+            .unwrap()
+        );
     }
 }

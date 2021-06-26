@@ -32,35 +32,28 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "destination": "/foo/bar"
-        });
-
-        let got = serde_json::to_value(Mount::new("/foo/bar")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({"destination": "/foo/bar"}),
+            serde_json::to_value(Mount::new("/foo/bar")).unwrap()
+        );
     }
 
     #[test]
     fn serialize_optional_fields() {
-        let want = serde_json::json!({
-            "destination": "/foo/bar",
-            "source": "/bar/baz",
-            "options": [
-                "foo",
-                "bar"
-            ],
-            "type": "tmpfs"
-        });
-
-        let got = serde_json::to_value(Mount {
-            source: Some(String::from("/bar/baz")),
-            options: Some(vec![String::from("foo"), String::from("bar")]),
-            mount_type: Some(String::from("tmpfs")),
-            ..Mount::new("/foo/bar")
-        })
-        .unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "destination": "/foo/bar",
+                "source": "/bar/baz",
+                "options": ["foo", "bar"],
+                "type": "tmpfs"
+            }),
+            serde_json::to_value(Mount {
+                source: Some(String::from("/bar/baz")),
+                options: Some(vec![String::from("foo"), String::from("bar")]),
+                mount_type: Some(String::from("tmpfs")),
+                ..Mount::new("/foo/bar")
+            })
+            .unwrap()
+        );
     }
 }

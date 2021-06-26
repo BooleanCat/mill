@@ -19,13 +19,12 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "height": 256,
-            "width": 512
-        });
-
-        let got = serde_json::to_value(ConsoleSize::new(256, 512)).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "height": 256,
+                "width": 512
+            }),
+            serde_json::to_value(ConsoleSize::new(256, 512)).unwrap()
+        );
     }
 }

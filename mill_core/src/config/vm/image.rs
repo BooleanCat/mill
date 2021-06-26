@@ -22,13 +22,12 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "path": "/foo/bar",
-            "format": "raw"
-        });
-
-        let got = serde_json::to_value(Image::new("/foo/bar", "raw")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "path": "/foo/bar",
+                "format": "raw"
+            }),
+            serde_json::to_value(Image::new("/foo/bar", "raw")).unwrap()
+        );
     }
 }

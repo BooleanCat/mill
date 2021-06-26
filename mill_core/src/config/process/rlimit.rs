@@ -26,14 +26,13 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "type": "RLIMIT_CORE",
-            "soft": 256,
-            "hard": 512
-        });
-
-        let got = serde_json::to_value(Rlimit::new("RLIMIT_CORE", 256, 512)).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "type": "RLIMIT_CORE",
+                "soft": 256,
+                "hard": 512
+            }),
+            serde_json::to_value(Rlimit::new("RLIMIT_CORE", 256, 512)).unwrap()
+        );
     }
 }

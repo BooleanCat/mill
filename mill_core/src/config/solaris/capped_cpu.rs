@@ -28,9 +28,7 @@ mod tests {
     #[test]
     fn serialize_optional_fields() {
         assert_eq!(
-            serde_json::json!({
-                "ncpus": "8"
-            }),
+            serde_json::json!({"ncpus": "8"}),
             serde_json::to_value(CappedCpu {
                 ncpus: Some(String::from("8")),
             })

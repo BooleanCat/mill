@@ -78,68 +78,58 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "cwd": "/foo/bar"
-        });
-
-        let got = serde_json::to_value(Process::new("/foo/bar")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({"cwd": "/foo/bar"}),
+            serde_json::to_value(Process::new("/foo/bar")).unwrap()
+        );
     }
 
     #[test]
     fn serialize_optional_fields() {
-        let want = serde_json::json!({
-            "terminal": true,
-            "consoleSize": {
-                "height": 256,
-                "width": 512
-            },
-            "cwd": "/foo/bar",
-            "env": [
-                "FOO=BAR",
-                "BAR=BAZ"
-            ],
-            "args": [
-                "ls",
-                "./"
-            ],
-            "commandLine": "ls ./",
-            "rlimits": [
-                {
-                    "type": "RLIMIT_CORE",
-                    "soft": 256,
-                    "hard": 512
+        assert_eq!(
+            serde_json::json!({
+                "terminal": true,
+                "consoleSize": {
+                    "height": 256,
+                    "width": 512
+                },
+                "cwd": "/foo/bar",
+                "env": ["FOO=BAR", "BAR=BAZ"],
+                "args": ["ls", "./"],
+                "commandLine": "ls ./",
+                "rlimits": [
+                    {
+                        "type": "RLIMIT_CORE",
+                        "soft": 256,
+                        "hard": 512
+                    }
+                ],
+                "apparmorProfile": "profile",
+                "capabilities": {},
+                "noNewPrivileges": true,
+                "oomScoreAdj": 200,
+                "selinuxLabel": "foo",
+                "user": {
+                    "uid": 10,
+                    "gid": 20
                 }
-            ],
-            "apparmorProfile": "profile",
-            "capabilities": {},
-            "noNewPrivileges": true,
-            "oomScoreAdj": 200,
-            "selinuxLabel": "foo",
-            "user": {
-                "uid": 10,
-                "gid": 20
-            }
-        });
-
-        let got = serde_json::to_value(Process {
-            terminal: Some(true),
-            console_size: Some(ConsoleSize::new(256, 512)),
-            env: Some(vec![String::from("FOO=BAR"), String::from("BAR=BAZ")]),
-            args: Some(vec![String::from("ls"), String::from("./")]),
-            command_line: Some(String::from("ls ./")),
-            rlimits: Some(vec![Rlimit::new("RLIMIT_CORE", 256, 512)]),
-            apparmor_profile: Some(String::from("profile")),
-            capabilities: Some(Capabilities::new()),
-            no_new_privileges: Some(true),
-            oom_score_adj: Some(200),
-            selinux_label: Some(String::from("foo")),
-            user: Some(User::posix(10, 20)),
-            ..Process::new("/foo/bar")
-        })
-        .unwrap();
-
-        assert_eq!(want, got);
+            }),
+            serde_json::to_value(Process {
+                terminal: Some(true),
+                console_size: Some(ConsoleSize::new(256, 512)),
+                env: Some(vec![String::from("FOO=BAR"), String::from("BAR=BAZ")]),
+                args: Some(vec![String::from("ls"), String::from("./")]),
+                command_line: Some(String::from("ls ./")),
+                rlimits: Some(vec![Rlimit::new("RLIMIT_CORE", 256, 512)]),
+                apparmor_profile: Some(String::from("profile")),
+                capabilities: Some(Capabilities::new()),
+                no_new_privileges: Some(true),
+                oom_score_adj: Some(200),
+                selinux_label: Some(String::from("foo")),
+                user: Some(User::posix(10, 20)),
+                ..Process::new("/foo/bar")
+            })
+            .unwrap()
+        );
     }
 }

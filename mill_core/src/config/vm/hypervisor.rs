@@ -24,31 +24,24 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "path": "/foo/bar"
-        });
-
-        let got = serde_json::to_value(Hypervisor::new("/foo/bar")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({"path": "/foo/bar"}),
+            serde_json::to_value(Hypervisor::new("/foo/bar")).unwrap()
+        );
     }
 
     #[test]
     fn serialize_optional_fields() {
-        let want = serde_json::json!({
-            "path": "/foo/bar",
-            "parameters": [
-                "bar",
-                "baz"
-            ],
-        });
-
-        let got = serde_json::to_value(Hypervisor {
-            parameters: Some(vec![String::from("bar"), String::from("baz")]),
-            ..Hypervisor::new("/foo/bar")
-        })
-        .unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "path": "/foo/bar",
+                "parameters": ["bar", "baz"],
+            }),
+            serde_json::to_value(Hypervisor {
+                parameters: Some(vec![String::from("bar"), String::from("baz")]),
+                ..Hypervisor::new("/foo/bar")
+            })
+            .unwrap()
+        );
     }
 }

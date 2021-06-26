@@ -37,9 +37,7 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({
-                "kernel": {
-                    "path": "/foo/bar"
-                }
+                "kernel": {"path": "/foo/bar"}
             }),
             serde_json::to_value(Vm::new(Kernel::new("/foo/bar"))).unwrap()
         );
@@ -49,12 +47,8 @@ mod tests {
     fn serialize_optional_fields() {
         assert_eq!(
             serde_json::json!({
-                "hypervisor": {
-                    "path": "/bar/baz"
-                },
-                "kernel": {
-                    "path": "/foo/bar"
-                },
+                "hypervisor": {"path": "/bar/baz"},
+                "kernel": {"path": "/foo/bar"},
                 "image": {
                     "path": "/bar/foo",
                     "format": "raw"

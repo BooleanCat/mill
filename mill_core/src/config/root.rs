@@ -25,28 +25,24 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "path": "/foo/bar"
-        });
-
-        let got = serde_json::to_value(Root::new("/foo/bar")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({"path": "/foo/bar"}),
+            serde_json::to_value(Root::new("/foo/bar")).unwrap()
+        );
     }
 
     #[test]
     fn serialize_optional_fields() {
-        let want = serde_json::json!({
-            "path": "/foo/bar",
-            "readOnly": true
-        });
-
-        let got = serde_json::to_value(Root {
-            read_only: Some(true),
-            ..Root::new("/foo/bar")
-        })
-        .unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "path": "/foo/bar",
+                "readOnly": true
+            }),
+            serde_json::to_value(Root {
+                read_only: Some(true),
+                ..Root::new("/foo/bar")
+            })
+            .unwrap()
+        );
     }
 }
