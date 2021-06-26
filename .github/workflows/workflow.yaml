@@ -18,9 +18,21 @@ jobs:
         toolchain: 1.53.0
         override: true
         components: "rustfmt,clippy"
+    - name: Install shellspec
+      run: |
+        wget \
+          -qO- \
+          https://github.com/shellspec/shellspec/releases/download/0.28.1/shellspec-dist.tar.gz \
+          | tar \
+            --directory=/usr/local/bin \
+            --strip-components=1 \
+            -xzf - \
+            shellspec/shellspec
     - name: Check
       run: make check
-    - name: Unit Test
+    - name: Unit test
       run: make test-unit
     - name: Build
       run: make build
+    - name: Acceptance test
+      run: make test-acceptance
