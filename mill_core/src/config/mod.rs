@@ -1,12 +1,14 @@
 mod mount;
 pub mod process;
 mod root;
+pub mod solaris;
 pub mod vm;
 
 pub use mount::Mount;
 pub use process::Process;
 pub use root::Root;
 use serde::{Deserialize, Serialize};
+pub use solaris::Solaris;
 use std::collections::HashMap;
 pub use vm::Vm;
 
@@ -31,7 +33,9 @@ pub struct Config {
     pub annotations: Option<HashMap<String, String>>,
     // pub linux: Option<Linux>,
     // pub windows: Option<Windows>,
-    // pub solaris: Option<Solaris>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub solaris: Option<Solaris>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vm: Option<Vm>,
 }
@@ -46,13 +50,14 @@ impl Config {
             hostname: None,
             annotations: None,
             vm: None,
+            solaris: None,
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{vm, Config, Mount, Process, Root, Vm};
+    use super::{vm, Config, Mount, Process, Root, Solaris, Vm};
     use serde_json;
 
     #[test]
@@ -89,7 +94,8 @@ mod tests {
                 "kernel": {
                     "path": "/bar/foo"
                 }
-            }
+            },
+            "solaris": {}
         });
 
         let got = serde_json::to_value(Config {
@@ -104,6 +110,7 @@ mod tests {
                     .collect(),
             ),
             vm: Some(Vm::new(vm::Kernel::new("/bar/foo"))),
+            solaris: Some(Solaris::new()),
             ..Config::new("0.1.0")
         })
         .unwrap();

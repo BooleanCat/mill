@@ -28,33 +28,26 @@ mod tests {
 
     #[test]
     fn serialize() {
-        let want = serde_json::json!({
-            "path": "/foo/bar"
-        });
-
-        let got = serde_json::to_value(Kernel::new("/foo/bar")).unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({"path": "/foo/bar"}),
+            serde_json::to_value(Kernel::new("/foo/bar")).unwrap()
+        );
     }
 
     #[test]
     fn serialize_optional_fields() {
-        let want = serde_json::json!({
-            "path": "/foo/bar",
-            "parameters": [
-                "bar",
-                "baz"
-            ],
-            "initrd": "/baz/bar.img"
-        });
-
-        let got = serde_json::to_value(Kernel {
-            parameters: Some(vec![String::from("bar"), String::from("baz")]),
-            initrd: Some(String::from("/baz/bar.img")),
-            ..Kernel::new("/foo/bar")
-        })
-        .unwrap();
-
-        assert_eq!(want, got);
+        assert_eq!(
+            serde_json::json!({
+                "path": "/foo/bar",
+                "parameters": ["bar", "baz"],
+                "initrd": "/baz/bar.img"
+            }),
+            serde_json::to_value(Kernel {
+                parameters: Some(vec![String::from("bar"), String::from("baz")]),
+                initrd: Some(String::from("/baz/bar.img")),
+                ..Kernel::new("/foo/bar")
+            })
+            .unwrap()
+        );
     }
 }
