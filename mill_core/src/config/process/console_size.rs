@@ -1,15 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct ConsoleSize {
     pub height: u64,
     pub width: u64,
-}
-
-impl ConsoleSize {
-    pub fn new(height: u64, width: u64) -> Self {
-        Self { height, width }
-    }
 }
 
 #[cfg(test)]
@@ -24,7 +18,11 @@ mod tests {
                 "height": 256,
                 "width": 512
             }),
-            serde_json::to_value(ConsoleSize::new(256, 512)).unwrap()
+            serde_json::to_value(ConsoleSize {
+                height: 256,
+                width: 512
+            })
+            .unwrap()
         );
     }
 }

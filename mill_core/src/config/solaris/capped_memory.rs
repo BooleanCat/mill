@@ -9,12 +9,6 @@ pub struct CappedMemory {
     pub swap: Option<String>,
 }
 
-impl CappedMemory {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::CappedMemory;
@@ -24,7 +18,7 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(CappedMemory::new()).unwrap()
+            serde_json::to_value::<CappedMemory>(Default::default()).unwrap()
         );
     }
 
@@ -36,8 +30,8 @@ mod tests {
                 "swap": "256m"
             }),
             serde_json::to_value(CappedMemory {
-                physical: Some(String::from("512m")),
-                swap: Some(String::from("256m"))
+                physical: Some("512m".into()),
+                swap: Some("256m".into())
             })
             .unwrap(),
         );

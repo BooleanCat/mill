@@ -22,7 +22,7 @@ pub use solaris::{
 use std::collections::HashMap;
 pub use vm::{Hypervisor as VmHypervisor, Image as VmImage, Kernel as VmKernel, Vm};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Config {
     pub oci_version: String,
@@ -53,22 +53,6 @@ pub struct Config {
     pub vm: Option<Vm>,
 }
 
-impl Config {
-    pub fn new(oci_version: &str) -> Self {
-        Self {
-            oci_version: String::from(oci_version),
-            root: None,
-            mounts: None,
-            process: None,
-            hostname: None,
-            annotations: None,
-            vm: None,
-            solaris: None,
-            linux: None,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::{Config, Mount, Process, Root, Vm, VmKernel};
@@ -80,7 +64,11 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({"ociVersion": "0.1.0"}),
-            serde_json::to_value(Config::new("0.1.0")).unwrap()
+            serde_json::to_value(Config {
+                oci_version: "0.1.0".into(),
+                ..Default::default()
+            })
+            .unwrap()
         );
     }
 
@@ -103,18 +91,33 @@ mod tests {
                 "linux": {}
             }),
             serde_json::to_value(Config {
-                oci_version: String::from("0.1.0"),
-                root: Some(Root::new("/foo/bar")),
-                mounts: Some(vec![Mount::new("/foo/bar")]),
-                process: Some(Process::new("/foo/bar")),
-                hostname: Some(String::from("baz")),
+                oci_version: "0.1.0".into(),
+                root: Some(Root {
+                    path: "/foo/bar".into(),
+                    ..Default::default()
+                }),
+                mounts: Some(vec![Mount {
+                    destination: "/foo/bar".into(),
+                    ..Default::default()
+                }]),
+                process: Some(Process {
+                    cwd: "/foo/bar".to_string(),
+                    ..Default::default()
+                }),
+                hostname: Some("baz".into()),
                 annotations: Some(
-                    [(String::from("com.example.gpu-cores"), String::from("2"))]
+                    [("com.example.gpu-cores".into(), "2".into())]
                         .iter()
                         .cloned()
                         .collect(),
                 ),
-                vm: Some(Vm::new(VmKernel::new("/bar/foo"))),
+                vm: Some(Vm {
+                    kernel: VmKernel {
+                        path: "/bar/foo".into(),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                }),
                 solaris: Some(Default::default()),
                 linux: Some(Default::default()),
             })

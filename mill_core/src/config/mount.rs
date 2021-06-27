@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Mount {
     pub destination: String,
 
@@ -14,17 +14,6 @@ pub struct Mount {
     pub mount_type: Option<String>,
 }
 
-impl Mount {
-    pub fn new(destination: &str) -> Self {
-        Self {
-            destination: String::from(destination),
-            source: None,
-            options: None,
-            mount_type: None,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::Mount;
@@ -34,7 +23,11 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({"destination": "/foo/bar"}),
-            serde_json::to_value(Mount::new("/foo/bar")).unwrap()
+            serde_json::to_value(Mount {
+                destination: "/foo/bar".into(),
+                ..Default::default()
+            })
+            .unwrap()
         );
     }
 
@@ -48,10 +41,10 @@ mod tests {
                 "type": "tmpfs"
             }),
             serde_json::to_value(Mount {
-                destination: String::from("/foo/bar"),
-                source: Some(String::from("/bar/baz")),
-                options: Some(vec![String::from("foo"), String::from("bar")]),
-                mount_type: Some(String::from("tmpfs")),
+                destination: "/foo/bar".into(),
+                source: Some("/bar/baz".into()),
+                options: Some(vec!["foo".into(), "bar".into()]),
+                mount_type: Some("tmpfs".into()),
             })
             .unwrap()
         );

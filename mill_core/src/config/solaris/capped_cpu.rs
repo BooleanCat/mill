@@ -6,12 +6,6 @@ pub struct CappedCpu {
     pub ncpus: Option<String>,
 }
 
-impl CappedCpu {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::CappedCpu;
@@ -21,7 +15,7 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(CappedCpu::new()).unwrap()
+            serde_json::to_value::<CappedCpu>(Default::default()).unwrap()
         );
     }
 
@@ -30,7 +24,7 @@ mod tests {
         assert_eq!(
             serde_json::json!({"ncpus": "8"}),
             serde_json::to_value(CappedCpu {
-                ncpus: Some(String::from("8")),
+                ncpus: Some("8".into()),
             })
             .unwrap(),
         );

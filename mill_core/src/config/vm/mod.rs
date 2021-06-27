@@ -7,7 +7,7 @@ pub use image::Image;
 pub use kernel::Kernel;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Vm {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hypervisor: Option<Hypervisor>,
@@ -16,16 +16,6 @@ pub struct Vm {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub image: Option<Image>,
-}
-
-impl Vm {
-    pub fn new(kernel: Kernel) -> Self {
-        Self {
-            kernel,
-            hypervisor: None,
-            image: None,
-        }
-    }
 }
 
 #[cfg(test)]
@@ -39,7 +29,14 @@ mod tests {
             serde_json::json!({
                 "kernel": {"path": "/foo/bar"}
             }),
-            serde_json::to_value(Vm::new(Kernel::new("/foo/bar"))).unwrap()
+            serde_json::to_value(Vm {
+                kernel: Kernel {
+                    path: "/foo/bar".into(),
+                    ..Default::default()
+                },
+                ..Default::default()
+            })
+            .unwrap()
         );
     }
 
@@ -55,9 +52,18 @@ mod tests {
                 }
             }),
             serde_json::to_value(Vm {
-                kernel: Kernel::new("/foo/bar"),
-                hypervisor: Some(Hypervisor::new("/bar/baz")),
-                image: Some(Image::new("/bar/foo", "raw")),
+                kernel: Kernel {
+                    path: "/foo/bar".into(),
+                    ..Default::default()
+                },
+                hypervisor: Some(Hypervisor {
+                    path: "/bar/baz".into(),
+                    ..Default::default()
+                }),
+                image: Some(Image {
+                    path: "/bar/foo".into(),
+                    format: "raw".into()
+                }),
             })
             .unwrap()
         );

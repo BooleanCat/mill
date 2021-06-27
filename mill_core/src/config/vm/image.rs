@@ -1,18 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Image {
     pub path: String,
     pub format: String,
-}
-
-impl Image {
-    pub fn new(path: &str, format: &str) -> Self {
-        Self {
-            path: String::from(path),
-            format: String::from(format),
-        }
-    }
 }
 
 #[cfg(test)]
@@ -27,7 +18,11 @@ mod tests {
                 "path": "/foo/bar",
                 "format": "raw"
             }),
-            serde_json::to_value(Image::new("/foo/bar", "raw")).unwrap()
+            serde_json::to_value(Image {
+                path: "/foo/bar".into(),
+                format: "raw".into()
+            })
+            .unwrap()
         );
     }
 }

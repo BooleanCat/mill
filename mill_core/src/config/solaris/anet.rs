@@ -25,12 +25,6 @@ pub struct Anet {
     pub link_protection: Option<String>,
 }
 
-impl Anet {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::Anet;
@@ -40,7 +34,7 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(Anet::new()).unwrap()
+            serde_json::to_value::<Anet>(Default::default()).unwrap()
         );
     }
 
@@ -57,13 +51,13 @@ mod tests {
                 "linkProtection": "mac-nospoof, ip-nospoof"
             }),
             serde_json::to_value(Anet {
-                linkname: Some(String::from("net0")),
-                lower_link: Some(String::from("net2")),
-                allowed_address: Some(String::from("172.17.0.2/16")),
-                configure_allowed_address: Some(String::from("true")),
-                defrouter: Some(String::from("172.17.0.1/16")),
-                mac_address: Some(String::from("02:42:f8:52:c7:16")),
-                link_protection: Some(String::from("mac-nospoof, ip-nospoof")),
+                linkname: Some("net0".into()),
+                lower_link: Some("net2".into()),
+                allowed_address: Some("172.17.0.2/16".into()),
+                configure_allowed_address: Some("true".into()),
+                defrouter: Some("172.17.0.1/16".into()),
+                mac_address: Some("02:42:f8:52:c7:16".into()),
+                link_protection: Some("mac-nospoof, ip-nospoof".into()),
             })
             .unwrap(),
         );

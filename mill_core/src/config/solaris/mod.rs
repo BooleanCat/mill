@@ -30,22 +30,16 @@ pub struct Solaris {
     pub anet: Option<Vec<Anet>>,
 }
 
-impl Solaris {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use super::{CappedCpu, CappedMemory, Solaris};
+    use super::Solaris;
     use serde_json;
 
     #[test]
     fn serialize() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(Solaris::new()).unwrap()
+            serde_json::to_value::<Solaris>(Default::default()).unwrap()
         );
     }
 
@@ -61,11 +55,11 @@ mod tests {
                 "anet": []
             }),
             serde_json::to_value(Solaris {
-                milestone: Some(String::from("svc:/milestone/container:default")),
-                limitpriv: Some(String::from("default")),
-                max_shm_memory: Some(String::from("512m")),
-                capped_cpu: Some(CappedCpu::new()),
-                capped_memory: Some(CappedMemory::new()),
+                milestone: Some("svc:/milestone/container:default".into()),
+                limitpriv: Some("default".into()),
+                max_shm_memory: Some("512m".into()),
+                capped_cpu: Some(Default::default()),
+                capped_memory: Some(Default::default()),
                 anet: Some(vec![]),
             })
             .unwrap()

@@ -1,21 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Namespace {
     #[serde(rename = "type")]
     pub namespace_type: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-}
-
-impl Namespace {
-    pub fn new(namespace_type: &str) -> Self {
-        Self {
-            namespace_type: String::from(namespace_type),
-            path: None,
-        }
-    }
 }
 
 #[cfg(test)]
@@ -27,7 +18,11 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({"type": "pid"}),
-            serde_json::to_value(Namespace::new("pid")).unwrap()
+            serde_json::to_value(Namespace {
+                namespace_type: "pid".into(),
+                ..Default::default()
+            })
+            .unwrap()
         );
     }
 
@@ -39,8 +34,8 @@ mod tests {
                 "path": "/proc/1234/ns/pid"
             }),
             serde_json::to_value(Namespace {
-                namespace_type: String::from("pid"),
-                path: Some(String::from("/proc/1234/ns/pid")),
+                namespace_type: "pid".into(),
+                path: Some("/proc/1234/ns/pid".into()),
             })
             .unwrap()
         );

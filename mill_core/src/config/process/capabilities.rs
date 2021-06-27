@@ -18,12 +18,6 @@ pub struct Capabilities {
     pub ambient: Option<Vec<String>>,
 }
 
-impl Capabilities {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::Capabilities;
@@ -33,7 +27,7 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(Capabilities::new()).unwrap()
+            serde_json::to_value::<Capabilities>(Default::default()).unwrap()
         );
     }
 
@@ -48,14 +42,11 @@ mod tests {
                 "ambient": ["CAP_CHECKPOINT_RESTORE"]
             }),
             serde_json::to_value(Capabilities {
-                effective: Some(vec![String::from("CAP_CHOWN")]),
-                bounding: Some(vec![
-                    String::from("CAP_AUDIT_CONTROL"),
-                    String::from("CAP_AUDIT_READ"),
-                ]),
-                inheritable: Some(vec![String::from("CAP_AUDIT_WRITE")]),
-                permitted: Some(vec![String::from("CAP_BPF")]),
-                ambient: Some(vec![String::from("CAP_CHECKPOINT_RESTORE")]),
+                effective: Some(vec!["CAP_CHOWN".into()]),
+                bounding: Some(vec!["CAP_AUDIT_CONTROL".into(), "CAP_AUDIT_READ".into()]),
+                inheritable: Some(vec!["CAP_AUDIT_WRITE".into()]),
+                permitted: Some(vec!["CAP_BPF".into()]),
+                ambient: Some(vec!["CAP_CHECKPOINT_RESTORE".into()]),
             })
             .unwrap()
         );

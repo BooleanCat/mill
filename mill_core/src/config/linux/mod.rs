@@ -26,12 +26,6 @@ pub struct Linux {
     pub cgroups_path: Option<String>,
 }
 
-impl Linux {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::{Device, IdMapping, Linux, Namespace};
@@ -41,7 +35,7 @@ mod tests {
     fn serialize() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(Linux::new()).unwrap()
+            serde_json::to_value::<Linux>(Default::default()).unwrap()
         );
     }
 
@@ -87,17 +81,42 @@ mod tests {
                 "cgroupsPath": "/myRuntime/myContainer"
             }),
             serde_json::to_value(Linux {
-                namespaces: Some(vec![Namespace::new("pid")]),
+                namespaces: Some(vec![Namespace {
+                    namespace_type: "pid".into(),
+                    ..Default::default()
+                }]),
                 uid_mappings: Some(vec![
-                    IdMapping::new(0, 1_000, 32_000),
-                    IdMapping::new(64_000, 60, 10)
+                    IdMapping {
+                        container_id: 0,
+                        host_id: 1_000,
+                        size: 32_000
+                    },
+                    IdMapping {
+                        container_id: 64_000,
+                        host_id: 60,
+                        size: 10
+                    },
                 ]),
                 gid_mappings: Some(vec![
-                    IdMapping::new(64_000, 60, 10),
-                    IdMapping::new(0, 1_000, 32_001)
+                    IdMapping {
+                        container_id: 64_000,
+                        host_id: 60,
+                        size: 10
+                    },
+                    IdMapping {
+                        container_id: 0,
+                        host_id: 1_000,
+                        size: 32_001
+                    },
                 ]),
-                devices: Some(vec![Device::new("c", "/dev/fuse", 10, 229)]),
-                cgroups_path: Some(String::from("/myRuntime/myContainer")),
+                devices: Some(vec![Device {
+                    device_type: "c".into(),
+                    path: "/dev/fuse".into(),
+                    major: 10,
+                    minor: 229,
+                    ..Default::default()
+                }]),
+                cgroups_path: Some("/myRuntime/myContainer".into()),
             })
             .unwrap()
         );

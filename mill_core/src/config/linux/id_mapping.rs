@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct IdMapping {
     #[serde(rename = "containerID")]
     pub container_id: u32,
@@ -9,16 +9,6 @@ pub struct IdMapping {
     pub host_id: u32,
 
     pub size: u32,
-}
-
-impl IdMapping {
-    pub fn new(container_id: u32, host_id: u32, size: u32) -> Self {
-        Self {
-            container_id,
-            host_id,
-            size,
-        }
-    }
 }
 
 #[cfg(test)]
@@ -34,7 +24,12 @@ mod tests {
                 "hostID": 1_000,
                 "size": 32_000
             }),
-            serde_json::to_value(IdMapping::new(0, 1_000, 32_000)).unwrap()
+            serde_json::to_value(IdMapping {
+                container_id: 0,
+                host_id: 1_000,
+                size: 32_000
+            })
+            .unwrap()
         );
     }
 }

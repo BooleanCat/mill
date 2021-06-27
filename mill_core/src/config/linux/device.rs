@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Device {
     #[serde(rename = "type")]
@@ -20,20 +20,6 @@ pub struct Device {
     pub gid: Option<u32>,
 }
 
-impl Device {
-    pub fn new(device_type: &str, path: &str, major: i64, minor: i64) -> Self {
-        Self {
-            device_type: String::from(device_type),
-            path: String::from(path),
-            major,
-            minor,
-            file_mode: None,
-            uid: None,
-            gid: None,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::Device;
@@ -48,7 +34,14 @@ mod tests {
                 "major": 10,
                 "minor": 229
             }),
-            serde_json::to_value(Device::new("c", "/dev/fuse", 10, 229)).unwrap()
+            serde_json::to_value(Device {
+                device_type: "c".into(),
+                path: "/dev/fuse".into(),
+                major: 10,
+                minor: 229,
+                ..Default::default()
+            })
+            .unwrap()
         );
     }
 
@@ -65,8 +58,8 @@ mod tests {
                 "gid": 0
             }),
             serde_json::to_value(Device {
-                device_type: String::from("c"),
-                path: String::from("/dev/fuse"),
+                device_type: "c".into(),
+                path: "/dev/fuse".into(),
                 major: 10,
                 minor: 229,
                 file_mode: Some(438),

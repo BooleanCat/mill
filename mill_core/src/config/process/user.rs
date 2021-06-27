@@ -20,21 +20,6 @@ pub enum User {
     },
 }
 
-impl User {
-    pub fn posix(uid: i64, gid: i64) -> Self {
-        Self::Posix {
-            uid,
-            gid,
-            additional_gids: None,
-            umask: None,
-        }
-    }
-
-    pub fn windows() -> Self {
-        Self::Windows { username: None }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::User;
@@ -47,7 +32,13 @@ mod tests {
                 "uid": 10,
                 "gid": 20
             }),
-            serde_json::to_value(User::posix(10, 20)).unwrap()
+            serde_json::to_value(User::Posix {
+                uid: 10,
+                gid: 20,
+                umask: None,
+                additional_gids: None,
+            })
+            .unwrap()
         );
     }
 
@@ -61,10 +52,10 @@ mod tests {
                 "additionalGids": [30, 40]
             }),
             serde_json::to_value(User::Posix {
-                umask: Some(0300),
-                additional_gids: Some(vec![30, 40]),
                 uid: 10,
                 gid: 20,
+                umask: Some(0300),
+                additional_gids: Some(vec![30, 40]),
             })
             .unwrap()
         );
@@ -74,7 +65,7 @@ mod tests {
     fn serialize_windows() {
         assert_eq!(
             serde_json::json!({}),
-            serde_json::to_value(User::windows()).unwrap()
+            serde_json::to_value(User::Windows { username: None }).unwrap()
         );
     }
 
@@ -83,7 +74,7 @@ mod tests {
         assert_eq!(
             serde_json::json!({"username": "alan"}),
             serde_json::to_value(User::Windows {
-                username: Some(String::from("alan")),
+                username: Some("alan".into()),
             })
             .unwrap()
         );
