@@ -55,9 +55,9 @@ mod tests {
                 }
             }),
             serde_json::to_value(Vm {
+                kernel: Kernel::new("/foo/bar"),
                 hypervisor: Some(Hypervisor::new("/bar/baz")),
                 image: Some(Image::new("/bar/foo", "raw")),
-                ..Vm::new(Kernel::new("/foo/bar"))
             })
             .unwrap()
         );

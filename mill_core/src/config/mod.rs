@@ -103,6 +103,7 @@ mod tests {
                 "linux": {}
             }),
             serde_json::to_value(Config {
+                oci_version: String::from("0.1.0"),
                 root: Some(Root::new("/foo/bar")),
                 mounts: Some(vec![Mount::new("/foo/bar")]),
                 process: Some(Process::new("/foo/bar")),
@@ -116,7 +117,6 @@ mod tests {
                 vm: Some(Vm::new(VmKernel::new("/bar/foo"))),
                 solaris: Some(Default::default()),
                 linux: Some(Default::default()),
-                ..Config::new("0.1.0")
             })
             .unwrap()
         );

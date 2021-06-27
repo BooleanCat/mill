@@ -43,9 +43,9 @@ mod tests {
                 "initrd": "/baz/bar.img"
             }),
             serde_json::to_value(Kernel {
+                path: String::from("/foo/bar"),
                 parameters: Some(vec![String::from("bar"), String::from("baz")]),
                 initrd: Some(String::from("/baz/bar.img")),
-                ..Kernel::new("/foo/bar")
             })
             .unwrap()
         );

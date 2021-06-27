@@ -39,8 +39,8 @@ mod tests {
                 "path": "/proc/1234/ns/pid"
             }),
             serde_json::to_value(Namespace {
+                namespace_type: String::from("pid"),
                 path: Some(String::from("/proc/1234/ns/pid")),
-                ..Namespace::new("pid")
             })
             .unwrap()
         );

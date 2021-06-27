@@ -115,6 +115,7 @@ mod tests {
                 }
             }),
             serde_json::to_value(Process {
+                cwd: String::from("/foo/bar"),
                 terminal: Some(true),
                 console_size: Some(ConsoleSize::new(256, 512)),
                 env: Some(vec![String::from("FOO=BAR"), String::from("BAR=BAZ")]),
@@ -127,7 +128,6 @@ mod tests {
                 oom_score_adj: Some(200),
                 selinux_label: Some(String::from("foo")),
                 user: Some(User::posix(10, 20)),
-                ..Process::new("/foo/bar")
             })
             .unwrap()
         );

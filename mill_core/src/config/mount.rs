@@ -48,10 +48,10 @@ mod tests {
                 "type": "tmpfs"
             }),
             serde_json::to_value(Mount {
+                destination: String::from("/foo/bar"),
                 source: Some(String::from("/bar/baz")),
                 options: Some(vec![String::from("foo"), String::from("bar")]),
                 mount_type: Some(String::from("tmpfs")),
-                ..Mount::new("/foo/bar")
             })
             .unwrap()
         );

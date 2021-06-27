@@ -65,10 +65,13 @@ mod tests {
                 "gid": 0
             }),
             serde_json::to_value(Device {
+                device_type: String::from("c"),
+                path: String::from("/dev/fuse"),
+                major: 10,
+                minor: 229,
                 file_mode: Some(438),
                 uid: Some(0),
                 gid: Some(0),
-                ..Device::new("c", "/dev/fuse", 10, 229)
             })
             .unwrap()
         );

@@ -38,8 +38,8 @@ mod tests {
                 "readonly": true
             }),
             serde_json::to_value(Root {
+                path: String::from("/foo/bar"),
                 readonly: Some(true),
-                ..Root::new("/foo/bar")
             })
             .unwrap()
         );

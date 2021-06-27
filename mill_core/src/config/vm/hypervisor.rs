@@ -38,8 +38,8 @@ mod tests {
                 "parameters": ["bar", "baz"],
             }),
             serde_json::to_value(Hypervisor {
+                path: String::from("/foo/bar"),
                 parameters: Some(vec![String::from("bar"), String::from("baz")]),
-                ..Hypervisor::new("/foo/bar")
             })
             .unwrap()
         );
