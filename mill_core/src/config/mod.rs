@@ -271,6 +271,45 @@ mod tests {
                         ]
                     }
                 ],
+                "linux": {
+                    "namespaces": [
+                        {
+                            "type": "pid"
+                        },
+                        {
+                            "type": "network"
+                        },
+                        {
+                            "type": "ipc"
+                        },
+                        {
+                            "type": "uts"
+                        },
+                        {
+                            "type": "mount"
+                        },
+                        {
+                            "type": "user"
+                        },
+                        {
+                            "type": "cgroup"
+                        }
+                    ],
+                    "uidMappings": [
+                        {
+                            "containerID": 0,
+                            "hostID": 1000,
+                            "size": 32000
+                        }
+                    ],
+                    "gidMappings": [
+                        {
+                            "containerID": 0,
+                            "hostID": 1000,
+                            "size": 32000
+                        }
+                    ]
+                },
                 "annotations": {
                     "com.example.key1": "value1",
                     "com.example.key2": "value2"
