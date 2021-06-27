@@ -330,7 +330,8 @@ mod tests {
                             "uid": 0,
                             "gid": 0
                         }
-                    ]
+                    ],
+                    "cgroupsPath": "/myRuntime/myContainer"
                 },
                 "annotations": {
                     "com.example.key1": "value1",

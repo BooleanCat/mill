@@ -21,6 +21,9 @@ pub struct Linux {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub devices: Option<Vec<Device>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cgroups_path: Option<String>,
 }
 
 impl Linux {
@@ -80,7 +83,8 @@ mod tests {
                         "major": 10,
                         "minor": 229
                     }
-                ]
+                ],
+                "cgroupsPath": "/myRuntime/myContainer"
             }),
             serde_json::to_value(Linux {
                 namespaces: Some(vec![Namespace::new("pid")]),
@@ -93,6 +97,7 @@ mod tests {
                     IdMapping::new(0, 1_000, 32_001)
                 ]),
                 devices: Some(vec![Device::new("c", "/dev/fuse", 10, 229)]),
+                cgroups_path: Some(String::from("/myRuntime/myContainer")),
             })
             .unwrap()
         );
