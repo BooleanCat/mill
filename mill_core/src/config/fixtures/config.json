@@ -176,6 +176,26 @@
                 "hostID": 1000,
                 "size": 32000
             }
+        ],
+        "devices": [
+            {
+                "path": "/dev/fuse",
+                "type": "c",
+                "major": 10,
+                "minor": 229,
+                "fileMode": 438,
+                "uid": 0,
+                "gid": 0
+            },
+            {
+                "path": "/dev/sda",
+                "type": "b",
+                "major": 8,
+                "minor": 0,
+                "fileMode": 432,
+                "uid": 0,
+                "gid": 0
+            }
         ]
     },
     "annotations": {

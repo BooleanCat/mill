@@ -3,10 +3,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Namespace {
     #[serde(rename = "type")]
-    namespace_type: String,
+    pub namespace_type: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    path: Option<String>,
+    pub path: Option<String>,
 }
 
 impl Namespace {

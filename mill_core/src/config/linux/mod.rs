@@ -1,6 +1,8 @@
+mod device;
 mod id_mapping;
 mod namespace;
 
+pub use device::Device;
 pub use id_mapping::IdMapping;
 pub use namespace::Namespace;
 use serde::{Deserialize, Serialize};
@@ -9,13 +11,16 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct Linux {
     #[serde(skip_serializing_if = "Option::is_none")]
-    namespaces: Option<Vec<Namespace>>,
+    pub namespaces: Option<Vec<Namespace>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    uid_mappings: Option<Vec<IdMapping>>,
+    pub uid_mappings: Option<Vec<IdMapping>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    gid_mappings: Option<Vec<IdMapping>>,
+    pub gid_mappings: Option<Vec<IdMapping>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub devices: Option<Vec<Device>>,
 }
 
 impl Linux {
@@ -26,7 +31,7 @@ impl Linux {
 
 #[cfg(test)]
 mod tests {
-    use super::{IdMapping, Linux, Namespace};
+    use super::{Device, IdMapping, Linux, Namespace};
     use serde_json;
 
     #[test]
@@ -67,6 +72,14 @@ mod tests {
                         "hostID": 1_000,
                         "size": 32_001
                     }
+                ],
+                "devices": [
+                    {
+                        "type": "c",
+                        "path": "/dev/fuse",
+                        "major": 10,
+                        "minor": 229
+                    }
                 ]
             }),
             serde_json::to_value(Linux {
@@ -79,6 +92,7 @@ mod tests {
                     IdMapping::new(64_000, 60, 10),
                     IdMapping::new(0, 1_000, 32_001)
                 ]),
+                devices: Some(vec![Device::new("c", "/dev/fuse", 10, 229)]),
             })
             .unwrap()
         );

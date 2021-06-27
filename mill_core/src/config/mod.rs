@@ -5,7 +5,9 @@ mod root;
 mod solaris;
 mod vm;
 
-pub use linux::{IdMapping as LinuxIdMapping, Linux, Namespace as LinuxNamespace};
+pub use linux::{
+    Device as LinuxDevice, IdMapping as LinuxIdMapping, Linux, Namespace as LinuxNamespace,
+};
 pub use mount::Mount;
 pub use process::{
     Capabilities as ProcessCapabilities, ConsoleSize as ProcessConsoleSize, Process,
@@ -307,6 +309,26 @@ mod tests {
                             "containerID": 0,
                             "hostID": 1000,
                             "size": 32000
+                        }
+                    ],
+                    "devices": [
+                        {
+                            "path": "/dev/fuse",
+                            "type": "c",
+                            "major": 10,
+                            "minor": 229,
+                            "fileMode": 438,
+                            "uid": 0,
+                            "gid": 0
+                        },
+                        {
+                            "path": "/dev/sda",
+                            "type": "b",
+                            "major": 8,
+                            "minor": 0,
+                            "fileMode": 432,
+                            "uid": 0,
+                            "gid": 0
                         }
                     ]
                 },

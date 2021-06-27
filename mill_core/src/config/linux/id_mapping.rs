@@ -3,12 +3,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct IdMapping {
     #[serde(rename = "containerID")]
-    container_id: u32,
+    pub container_id: u32,
 
     #[serde(rename = "hostID")]
-    host_id: u32,
+    pub host_id: u32,
 
-    size: u32,
+    pub size: u32,
 }
 
 impl IdMapping {
