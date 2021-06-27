@@ -5,7 +5,7 @@ mod root;
 mod solaris;
 mod vm;
 
-pub use linux::Linux;
+pub use linux::{Linux, Namespace as LinuxNamespace};
 pub use mount::Mount;
 pub use process::{
     Capabilities as ProcessCapabilities, ConsoleSize as ProcessConsoleSize, Process,
