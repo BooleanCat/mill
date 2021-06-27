@@ -1,19 +1,18 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub struct Root {
     pub path: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub read_only: Option<bool>,
+    pub readonly: Option<bool>,
 }
 
 impl Root {
     pub fn new(path: &str) -> Self {
         Self {
             path: String::from(path),
-            read_only: None,
+            readonly: None,
         }
     }
 }
@@ -36,10 +35,10 @@ mod tests {
         assert_eq!(
             serde_json::json!({
                 "path": "/foo/bar",
-                "readOnly": true
+                "readonly": true
             }),
             serde_json::to_value(Root {
-                read_only: Some(true),
+                readonly: Some(true),
                 ..Root::new("/foo/bar")
             })
             .unwrap()
