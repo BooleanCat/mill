@@ -1,9 +1,11 @@
+mod linux;
 mod mount;
 mod process;
 mod root;
 mod solaris;
 mod vm;
 
+pub use linux::Linux;
 pub use mount::Mount;
 pub use process::{
     Capabilities as ProcessCapabilities, ConsoleSize as ProcessConsoleSize, Process,
@@ -37,7 +39,10 @@ pub struct Config {
     // pub hooks: Option<Hook>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotations: Option<HashMap<String, String>>,
-    // pub linux: Option<Linux>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub linux: Option<Linux>,
+
     // pub windows: Option<Windows>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub solaris: Option<Solaris>,
@@ -57,13 +62,14 @@ impl Config {
             annotations: None,
             vm: None,
             solaris: None,
+            linux: None,
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{Config, Mount, Process, Root, Solaris, Vm, VmKernel};
+    use super::{Config, Mount, Process, Root, Vm, VmKernel};
     use serde_json;
     use std::fs::File;
     use std::io::BufReader;
@@ -91,7 +97,8 @@ mod tests {
                 "vm": {
                     "kernel": {"path": "/bar/foo"}
                 },
-                "solaris": {}
+                "solaris": {},
+                "linux": {}
             }),
             serde_json::to_value(Config {
                 root: Some(Root::new("/foo/bar")),
@@ -105,7 +112,8 @@ mod tests {
                         .collect(),
                 ),
                 vm: Some(Vm::new(VmKernel::new("/bar/foo"))),
-                solaris: Some(Solaris::new()),
+                solaris: Some(Default::default()),
+                linux: Some(Default::default()),
                 ..Config::new("0.1.0")
             })
             .unwrap()
