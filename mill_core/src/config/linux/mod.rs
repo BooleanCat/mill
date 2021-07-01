@@ -1,10 +1,12 @@
 mod device;
 mod id_mapping;
 mod namespace;
+mod resources;
 
 pub use device::Device;
 pub use id_mapping::IdMapping;
 pub use namespace::Namespace;
+pub use resources::{Device as ResourceDevice, Resources};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Default)]
@@ -24,6 +26,9 @@ pub struct Linux {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cgroups_path: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Resources>,
 }
 
 #[cfg(test)]
@@ -78,7 +83,8 @@ mod tests {
                         "minor": 229
                     }
                 ],
-                "cgroupsPath": "/myRuntime/myContainer"
+                "cgroupsPath": "/myRuntime/myContainer",
+                "resources": {}
             }),
             serde_json::to_value(Linux {
                 namespaces: Some(vec![Namespace {
@@ -117,6 +123,7 @@ mod tests {
                     ..Default::default()
                 }]),
                 cgroups_path: Some("/myRuntime/myContainer".into()),
+                resources: Some(Default::default()),
             })
             .unwrap()
         );

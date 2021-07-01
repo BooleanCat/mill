@@ -7,6 +7,7 @@ mod vm;
 
 pub use linux::{
     Device as LinuxDevice, IdMapping as LinuxIdMapping, Linux, Namespace as LinuxNamespace,
+    ResourceDevice as LinuxResourceDevice, Resources as LinuxResources,
 };
 pub use mount::Mount;
 pub use process::{
@@ -334,7 +335,29 @@ mod tests {
                             "gid": 0
                         }
                     ],
-                    "cgroupsPath": "/myRuntime/myContainer"
+                    "cgroupsPath": "/myRuntime/myContainer",
+                    "resources": {
+                        "devices": [
+                            {
+                                "allow": false,
+                                "access": "rwm"
+                            },
+                            {
+                                "allow": true,
+                                "type": "c",
+                                "major": 10,
+                                "minor": 229,
+                                "access": "rw"
+                            },
+                            {
+                                "allow": true,
+                                "type": "b",
+                                "major": 8,
+                                "minor": 0,
+                                "access": "r"
+                            }
+                        ],
+                    }
                 },
                 "annotations": {
                     "com.example.key1": "value1",
