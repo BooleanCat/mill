@@ -7,7 +7,8 @@ mod vm;
 
 pub use linux::{
     Device as LinuxDevice, IdMapping as LinuxIdMapping, Linux, Namespace as LinuxNamespace,
-    ResourceDevice as LinuxResourceDevice, Resources as LinuxResources,
+    ResourceDevice as LinuxResourceDevice, ResourceMemory as LinuxResourceMemory,
+    Resources as LinuxResources,
 };
 pub use mount::Mount;
 pub use process::{
@@ -357,6 +358,15 @@ mod tests {
                                 "access": "r"
                             }
                         ],
+                        "memory": {
+                            "limit": 536870912,
+                            "reservation": 536870912,
+                            "swap": 536870912,
+                            "kernel": -1,
+                            "kernelTCP": -1,
+                            "swappiness": 0,
+                            "disableOOMKiller": false
+                        }
                     }
                 },
                 "annotations": {
