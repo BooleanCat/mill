@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct Root {
     pub path: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub readonly: Option<bool>,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub readonly: bool,
 }
 
 #[cfg(test)]
@@ -16,9 +17,24 @@ mod tests {
     #[test]
     fn serialize() {
         assert_eq!(
-            serde_json::json!({"path": "/foo/bar"}),
+            serde_json::json!({
+                "path": "rootfs",
+                "readonly": true
+            }),
             serde_json::to_value(Root {
-                path: "/foo/bar".into(),
+                path: "rootfs".into(),
+                readonly: true,
+            })
+            .unwrap()
+        );
+    }
+
+    #[test]
+    fn serialize_defaults() {
+        assert_eq!(
+            serde_json::json!({"path": "rootfs"}),
+            serde_json::to_value(Root {
+                path: "rootfs".into(),
                 ..Default::default()
             })
             .unwrap()
@@ -26,17 +42,28 @@ mod tests {
     }
 
     #[test]
-    fn serialize_optional_fields() {
+    fn deserialize() {
         assert_eq!(
-            serde_json::json!({
-                "path": "/foo/bar",
-                "readonly": true
-            }),
-            serde_json::to_value(Root {
-                path: "/foo/bar".into(),
-                readonly: Some(true),
-            })
-            .unwrap()
+            serde_json::from_value::<Root>(serde_json::json!({
+                "path": "rootfs",
+                "readonly": true,
+            }))
+            .unwrap(),
+            Root {
+                path: "rootfs".into(),
+                readonly: true,
+            }
+        );
+    }
+
+    #[test]
+    fn deserialize_defaults() {
+        assert_eq!(
+            serde_json::from_value::<Root>(serde_json::json!({"path": "rootfs"})).unwrap(),
+            Root {
+                path: "rootfs".into(),
+                readonly: false,
+            }
         );
     }
 }
