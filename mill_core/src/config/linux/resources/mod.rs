@@ -1,6 +1,8 @@
+mod cpu;
 mod device;
 mod memory;
 
+pub use cpu::Cpu;
 pub use device::Device;
 pub use memory::Memory;
 use serde::{Deserialize, Serialize};
@@ -12,6 +14,9 @@ pub struct Resources {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     memory: Option<Memory>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cpu: Option<Cpu>,
 }
 
 #[cfg(test)]
@@ -32,7 +37,8 @@ mod tests {
         assert_eq!(
             serde_json::json!({
                 "devices": [{"allow": true}],
-                "memory": {}
+                "memory": {},
+                "cpu": {}
             }),
             serde_json::to_value(Resources {
                 devices: Some(vec![Device {
@@ -40,6 +46,7 @@ mod tests {
                     ..Default::default()
                 }]),
                 memory: Some(Default::default()),
+                cpu: Some(Default::default()),
             })
             .unwrap()
         );

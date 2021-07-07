@@ -7,8 +7,8 @@ mod vm;
 
 pub use linux::{
     Device as LinuxDevice, IdMapping as LinuxIdMapping, Linux, Namespace as LinuxNamespace,
-    ResourceDevice as LinuxResourceDevice, ResourceMemory as LinuxResourceMemory,
-    Resources as LinuxResources,
+    ResourceCpu as LinuxResourceCpu, ResourceDevice as LinuxResourceDevice,
+    ResourceMemory as LinuxResourceMemory, Resources as LinuxResources,
 };
 pub use mount::Mount;
 pub use process::{
@@ -366,6 +366,15 @@ mod tests {
                             "kernelTCP": -1,
                             "swappiness": 0,
                             "disableOOMKiller": false
+                        },
+                        "cpu": {
+                            "shares": 1024,
+                            "quota": 1000000,
+                            "period": 500000,
+                            "realtimeRuntime": 950000,
+                            "realtimePeriod": 1000000,
+                            "cpus": "2-3",
+                            "mems": "0-7"
                         }
                     }
                 },

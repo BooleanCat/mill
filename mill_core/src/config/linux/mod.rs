@@ -6,7 +6,9 @@ mod resources;
 pub use device::Device;
 pub use id_mapping::IdMapping;
 pub use namespace::Namespace;
-pub use resources::{Device as ResourceDevice, Memory as ResourceMemory, Resources};
+pub use resources::{
+    Cpu as ResourceCpu, Device as ResourceDevice, Memory as ResourceMemory, Resources,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Default)]
