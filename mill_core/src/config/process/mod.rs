@@ -17,11 +17,15 @@ pub struct Process {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub command_line: Option<String>,
     // rlimits
-    // apparmorProfile
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub apparmor_profile: Option<String>,
     // capabilities
     // noNewPrivileges
-    // oomScoreAdj
-    // selinuxLabel
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oom_score_adj: Option<i32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selinux_label: Option<String>,
     // user
 }
 
@@ -41,7 +45,10 @@ mod tests {
                     "TERM=xterm"
                 ],
                 "args": ["sh"],
-                "commandLine": "ls /"
+                "commandLine": "ls /",
+                "apparmorProfile": "acme_secure_profile",
+                "oomScoreAdj": 200,
+                "selinuxLabel": "system_u:system_r:svirt_lxc_net_t:s0:c124,c675"
             }),
             serde_json::to_value(Process {
                 terminal: true,
@@ -52,6 +59,9 @@ mod tests {
                 ],
                 args: vec!["sh".into()],
                 command_line: Some("ls /".into()),
+                apparmor_profile: Some("acme_secure_profile".into()),
+                oom_score_adj: Some(200),
+                selinux_label: Some("system_u:system_r:svirt_lxc_net_t:s0:c124,c675".into()),
             })
             .unwrap()
         );
@@ -80,7 +90,10 @@ mod tests {
                     "TERM=xterm"
                 ],
                 "args": ["sh"],
-                "commandLine": "ls /"
+                "commandLine": "ls /",
+                "apparmorProfile": "acme_secure_profile",
+                "oomScoreAdj": 200,
+                "selinuxLabel": "system_u:system_r:svirt_lxc_net_t:s0:c124,c675",
             }))
             .unwrap(),
             Process {
@@ -92,6 +105,9 @@ mod tests {
                 ],
                 args: vec!["sh".into()],
                 command_line: Some("ls /".into()),
+                apparmor_profile: Some("acme_secure_profile".into()),
+                oom_score_adj: Some(200),
+                selinux_label: Some("system_u:system_r:svirt_lxc_net_t:s0:c124,c675".into()),
             }
         );
     }
@@ -106,6 +122,9 @@ mod tests {
                 env: vec![],
                 args: vec![],
                 command_line: None,
+                apparmor_profile: None,
+                oom_score_adj: None,
+                selinux_label: None,
             }
         );
     }
