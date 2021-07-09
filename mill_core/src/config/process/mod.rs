@@ -1,3 +1,6 @@
+mod capabilities;
+
+pub use capabilities::Capabilities;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
@@ -19,7 +22,10 @@ pub struct Process {
     // rlimits
     #[serde(skip_serializing_if = "Option::is_none")]
     pub apparmor_profile: Option<String>,
-    // capabilities
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<Capabilities>,
+
     // noNewPrivileges
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oom_score_adj: Option<i32>,
@@ -47,6 +53,7 @@ mod tests {
                 "args": ["sh"],
                 "commandLine": "ls /",
                 "apparmorProfile": "acme_secure_profile",
+                "capabilities": {},
                 "oomScoreAdj": 200,
                 "selinuxLabel": "system_u:system_r:svirt_lxc_net_t:s0:c124,c675"
             }),
@@ -60,6 +67,7 @@ mod tests {
                 args: vec!["sh".into()],
                 command_line: Some("ls /".into()),
                 apparmor_profile: Some("acme_secure_profile".into()),
+                capabilities: Some(Default::default()),
                 oom_score_adj: Some(200),
                 selinux_label: Some("system_u:system_r:svirt_lxc_net_t:s0:c124,c675".into()),
             })
@@ -92,6 +100,7 @@ mod tests {
                 "args": ["sh"],
                 "commandLine": "ls /",
                 "apparmorProfile": "acme_secure_profile",
+                "capabilities": {},
                 "oomScoreAdj": 200,
                 "selinuxLabel": "system_u:system_r:svirt_lxc_net_t:s0:c124,c675",
             }))
@@ -106,6 +115,7 @@ mod tests {
                 args: vec!["sh".into()],
                 command_line: Some("ls /".into()),
                 apparmor_profile: Some("acme_secure_profile".into()),
+                capabilities: Some(Default::default()),
                 oom_score_adj: Some(200),
                 selinux_label: Some("system_u:system_r:svirt_lxc_net_t:s0:c124,c675".into()),
             }
@@ -123,6 +133,7 @@ mod tests {
                 args: vec![],
                 command_line: None,
                 apparmor_profile: None,
+                capabilities: None,
                 oom_score_adj: None,
                 selinux_label: None,
             }
