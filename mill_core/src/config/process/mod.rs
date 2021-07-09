@@ -1,6 +1,8 @@
 mod capabilities;
+mod console_size;
 
 pub use capabilities::Capabilities;
+pub use console_size::ConsoleSize;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
@@ -8,7 +10,10 @@ use serde::{Deserialize, Serialize};
 pub struct Process {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub terminal: bool,
-    // console_size
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub console_size: Option<ConsoleSize>,
+
     pub cwd: String,
 
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -26,7 +31,9 @@ pub struct Process {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<Capabilities>,
 
-    // noNewPrivileges
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub no_new_privileges: bool,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oom_score_adj: Option<i32>,
 
@@ -37,7 +44,7 @@ pub struct Process {
 
 #[cfg(test)]
 mod tests {
-    use super::Process;
+    use super::{ConsoleSize, Process};
     use serde_json;
 
     #[test]
@@ -45,6 +52,10 @@ mod tests {
         assert_eq!(
             serde_json::json!({
                 "terminal": true,
+                "consoleSize": {
+                    "height": 1024,
+                    "width": 2048
+                },
                 "cwd": "/root",
                 "env": [
                     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -54,11 +65,16 @@ mod tests {
                 "commandLine": "ls /",
                 "apparmorProfile": "acme_secure_profile",
                 "capabilities": {},
+                "noNewPrivileges": true,
                 "oomScoreAdj": 200,
                 "selinuxLabel": "system_u:system_r:svirt_lxc_net_t:s0:c124,c675"
             }),
             serde_json::to_value(Process {
                 terminal: true,
+                console_size: Some(ConsoleSize {
+                    height: 1024,
+                    width: 2048
+                }),
                 cwd: "/root".into(),
                 env: vec![
                     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin".into(),
@@ -68,6 +84,7 @@ mod tests {
                 command_line: Some("ls /".into()),
                 apparmor_profile: Some("acme_secure_profile".into()),
                 capabilities: Some(Default::default()),
+                no_new_privileges: true,
                 oom_score_adj: Some(200),
                 selinux_label: Some("system_u:system_r:svirt_lxc_net_t:s0:c124,c675".into()),
             })
@@ -92,6 +109,10 @@ mod tests {
         assert_eq!(
             serde_json::from_value::<Process>(serde_json::json!({
                 "terminal": true,
+                "consoleSize": {
+                    "height": 1024,
+                    "width": 2048
+                },
                 "cwd": "/root",
                 "env": [
                     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -101,12 +122,17 @@ mod tests {
                 "commandLine": "ls /",
                 "apparmorProfile": "acme_secure_profile",
                 "capabilities": {},
+                "noNewPrivileges": true,
                 "oomScoreAdj": 200,
                 "selinuxLabel": "system_u:system_r:svirt_lxc_net_t:s0:c124,c675",
             }))
             .unwrap(),
             Process {
                 terminal: true,
+                console_size: Some(ConsoleSize {
+                    height: 1024,
+                    width: 2048
+                }),
                 cwd: "/root".into(),
                 env: vec![
                     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin".into(),
@@ -116,6 +142,7 @@ mod tests {
                 command_line: Some("ls /".into()),
                 apparmor_profile: Some("acme_secure_profile".into()),
                 capabilities: Some(Default::default()),
+                no_new_privileges: true,
                 oom_score_adj: Some(200),
                 selinux_label: Some("system_u:system_r:svirt_lxc_net_t:s0:c124,c675".into()),
             }
@@ -128,12 +155,14 @@ mod tests {
             serde_json::from_value::<Process>(serde_json::json!({"cwd": "/root"})).unwrap(),
             Process {
                 terminal: false,
+                console_size: None,
                 cwd: "/root".into(),
                 env: vec![],
                 args: vec![],
                 command_line: None,
                 apparmor_profile: None,
                 capabilities: None,
+                no_new_privileges: false,
                 oom_score_adj: None,
                 selinux_label: None,
             }
