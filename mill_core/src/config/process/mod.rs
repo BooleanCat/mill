@@ -1,8 +1,10 @@
 mod capabilities;
 mod console_size;
+mod rlimit;
 
 pub use capabilities::Capabilities;
 pub use console_size::ConsoleSize;
+pub use rlimit::Rlimit;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
@@ -24,7 +26,10 @@ pub struct Process {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub command_line: Option<String>,
-    // rlimits
+
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub rlimits: Vec<Rlimit>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub apparmor_profile: Option<String>,
 
@@ -44,7 +49,7 @@ pub struct Process {
 
 #[cfg(test)]
 mod tests {
-    use super::{ConsoleSize, Process};
+    use super::{ConsoleSize, Process, Rlimit};
     use serde_json;
 
     #[test]
@@ -63,6 +68,13 @@ mod tests {
                 ],
                 "args": ["sh"],
                 "commandLine": "ls /",
+                "rlimits": [
+                    {
+                        "type": "RLIMIT_NOFILE",
+                        "hard": 1024,
+                        "soft": 1024
+                    }
+                ],
                 "apparmorProfile": "acme_secure_profile",
                 "capabilities": {},
                 "noNewPrivileges": true,
@@ -82,6 +94,11 @@ mod tests {
                 ],
                 args: vec!["sh".into()],
                 command_line: Some("ls /".into()),
+                rlimits: vec![Rlimit {
+                    rlimit_type: "RLIMIT_NOFILE".into(),
+                    soft: 1024,
+                    hard: 1024
+                }],
                 apparmor_profile: Some("acme_secure_profile".into()),
                 capabilities: Some(Default::default()),
                 no_new_privileges: true,
@@ -120,6 +137,13 @@ mod tests {
                 ],
                 "args": ["sh"],
                 "commandLine": "ls /",
+                "rlimits": [
+                    {
+                        "type": "RLIMIT_NOFILE",
+                        "hard": 1024,
+                        "soft": 1024
+                    }
+                ],
                 "apparmorProfile": "acme_secure_profile",
                 "capabilities": {},
                 "noNewPrivileges": true,
@@ -140,6 +164,11 @@ mod tests {
                 ],
                 args: vec!["sh".into()],
                 command_line: Some("ls /".into()),
+                rlimits: vec![Rlimit {
+                    rlimit_type: "RLIMIT_NOFILE".into(),
+                    soft: 1024,
+                    hard: 1024
+                }],
                 apparmor_profile: Some("acme_secure_profile".into()),
                 capabilities: Some(Default::default()),
                 no_new_privileges: true,
@@ -160,6 +189,7 @@ mod tests {
                 env: vec![],
                 args: vec![],
                 command_line: None,
+                rlimits: vec![],
                 apparmor_profile: None,
                 capabilities: None,
                 no_new_privileges: false,
