@@ -2,7 +2,7 @@
 name = "mill"
 version = "0.1.0"
 authors = ["Tom Godkin <tomgodkin@pm.me>"]
-edition = "2018"
+edition = "2021"
 license = "Unlicense OR MIT"
 description = "An OCI-compliant container runtime."
 
