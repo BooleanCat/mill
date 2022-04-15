@@ -12,7 +12,7 @@ struct Opt {
     config: Option<PathBuf>,
 
     #[structopt(subcommand)]
-    command: Subcommand,
+    _command: Subcommand,
 }
 
 #[derive(Debug, StructOpt)]
@@ -21,37 +21,37 @@ enum Subcommand {
     #[structopt(about = "Query container state")]
     State {
         #[structopt(name = "container-id")]
-        id: String,
+        _id: String,
     },
 
     #[structopt(about = "Create container from bundle")]
     Create {
         #[structopt(name = "container-id")]
-        id: String,
+        _id: String,
 
         #[structopt(name = "path-to-bundle", parse(from_os_str))]
-        bundle_path: PathBuf,
+        _bundle_path: PathBuf,
     },
 
     #[structopt(about = "Start created container")]
     Start {
         #[structopt(name = "container-id")]
-        id: String,
+        _id: String,
     },
 
     #[structopt(about = "Kill container with signal")]
     Kill {
         #[structopt(name = "container-id")]
-        id: String,
+        _id: String,
 
         #[structopt(name = "signal", default_value = "SIGTERM")]
-        signal: String,
+        _signal: String,
     },
 
     #[structopt(about = "Delete container")]
     Delete {
         #[structopt(name = "container-id")]
-        id: String,
+        _id: String,
     },
 }
 
